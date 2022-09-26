@@ -13,24 +13,28 @@ namespace HitMaster3DTestProject
         [SerializeField] private NavMeshAgent _agent;
         [SerializeField] private Transform[] _points;
 
-        private readonly float _rotateTime = 0.15f;
+        private readonly float _rotateTime = 0.4f;
 
-        private int _currentPoint = 0;
+        private int _currentPoint = -1;
         public int CurrentPoint => _currentPoint;
+
+        public float MaximumSpeed => _agent.speed;
+        public float CurrentSpeed => _agent.velocity.x + _agent.velocity.y + _agent.velocity.z;
 
         public void MoveToNextPoint()
         {
             _currentPoint++;
-            _agent.Move(_points[_currentPoint].transform.position);
+            _agent.SetDestination(_points[_currentPoint].transform.position);
             StartCoroutine(WaitForStop());
         }
 
         private IEnumerator WaitForStop()
         {
-            while (!_agent.isStopped)
+            do
                 yield return new WaitForEndOfFrame();
+            while (_agent.remainingDistance > _agent.stoppingDistance);
 
-            transform.DORotate(_points[_currentPoint].rotation.eulerAngles, _rotateTime);
+            transform.DORotateQuaternion(_points[_currentPoint].rotation, _rotateTime);
             yield return new WaitForSeconds(_rotateTime);
 
             OnPlayerStopped?.Invoke();

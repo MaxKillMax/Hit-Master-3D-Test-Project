@@ -12,13 +12,20 @@ namespace HitMaster3DTestProject
         {
             InteractCondition = interactCondition;
             ProjectileData = projectileData;
+
+            InitializeProjectiles();
         }
 
-        protected override void InitializePoolObject()
+        protected void InitializeProjectiles()
         {
-            base.InitializePoolObject();
-            AvailableObjects[AvailableObjects.Count - 1].SetInteractCondition(InteractCondition);
-            AvailableObjects[AvailableObjects.Count - 1].SetData(ProjectileData);
+            for (int i = 0; i < AvailableObjects.Count; i++)
+                InitializeProjectile(AvailableObjects[i]);
+        }
+        
+        protected void InitializeProjectile(Projectile projectile)
+        {
+            projectile.SetInteractCondition(InteractCondition);
+            projectile.SetData(ProjectileData);
         }
     }
 }

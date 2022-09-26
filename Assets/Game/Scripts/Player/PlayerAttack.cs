@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using UnityEngine;
 
 namespace HitMaster3DTestProject
@@ -7,35 +5,43 @@ namespace HitMaster3DTestProject
     public class PlayerAttack : MonoBehaviour
     {
         [SerializeField] private ProjectileData _projectileData;
+        [SerializeField] private Transform _bulletOrigin;
 
-        private readonly int _poolSize = 5;
-        private readonly Func<Transform, InteractType, bool> _interactCondition = (transform, interactType) => { return interactType == InteractType.Collision && transform.TryGetComponent(out Enemy enemy); };
+        private readonly int _poolSize = 15;
 
         private ProjectilePool _projectilePool;
 
         private void Awake()
         {
-            _projectilePool = new ProjectilePool(_projectileData, _poolSize, _interactCondition);
+            _projectilePool = new ProjectilePool(_projectileData, _poolSize, (transform, interactType) => transform.TryGetComponent(out EnemyPart enemyPart) && enemyPart.Enemy.Health > 0);
         }
 
-        public void LaunchProjectile(Vector3 direction)
+        public void LaunchProjectile(Ray ray)
         {
             Projectile projectile =_projectilePool.Get();
-            projectile.LaunchProjectile(direction);
+
+            projectile.LaunchProjectile(_bulletOrigin.position, ray.direction);
+
             projectile.OnObjectEnter += Attack;
-            StartCoroutine(WaitForProjectileRelease(projectile));
+            projectile.OnLifeTimeOut += ReleaseProjectile;
         }
 
-        public void Attack(Interactor interactor)
+        private void Attack(Interactor interactor)
         {
             Projectile projectile = interactor as Projectile;
-            projectile.CheckedTransform.GetComponent<Enemy>().GetDamage(projectile.Damage);
+
+            projectile.CheckedTransform.GetComponent<EnemyPart>().Enemy.GetDamage(projectile.Damage);
+
+            ReleaseProjectile(projectile);
         }
 
-        private IEnumerator WaitForProjectileRelease(Projectile projectile)
+        private void ReleaseProjectile(Projectile projectile)
         {
-            yield return new WaitForSeconds(projectile.LifeTime);
             projectile.OnObjectEnter -= Attack;
+            projectile.OnLifeTimeOut -= ReleaseProjectile;
+
+            projectile.StopProjectile();
+
             _projectilePool.Release(projectile);
         }
     }

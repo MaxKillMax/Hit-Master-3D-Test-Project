@@ -7,6 +7,9 @@ namespace HitMaster3DTestProject
         [SerializeField] private EnemyDestroying _enemyDestroying;
 
         [SerializeField] private float _startHealth;
+        [SerializeField] private int _wayPoint;
+
+        public int WayPoint => _wayPoint;
 
         private void Awake()
         {

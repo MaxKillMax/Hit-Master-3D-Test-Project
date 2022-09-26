@@ -15,7 +15,6 @@ namespace HitMaster3DTestProject
             for (int i = 0; i < _rigidbodies.Length; i++)
             {
                 _rigidbodies[i].velocity = Vector3.zero;
-                _rigidbodies[i].Sleep();
             }
         }
     }
