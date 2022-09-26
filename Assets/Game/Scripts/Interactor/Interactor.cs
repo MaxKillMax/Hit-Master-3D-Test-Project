@@ -5,21 +5,18 @@ namespace HitMaster3DTestProject
 {
     public class Interactor : MonoBehaviour
     {
-        public event Action OnObjectEnter;
-        public event Action OnObjectStay;
-        public event Action OnObjectExit;
+        public event Action<Interactor> OnObjectEnter;
+        public event Action<Interactor> OnObjectStay;
+        public event Action<Interactor> OnObjectExit;
 
         private event Func<Transform, InteractType, bool> InteractCondition;
 
-        public void AddInteractCondition(Func<Transform, InteractType, bool> interactCondition)
-        {
-            InteractCondition += interactCondition;
-        }
+        private Transform _checkedTransform;
+        public Transform CheckedTransform => _checkedTransform;
 
-        public void RemoveInteractCondition(Func<Transform, InteractType, bool> interactCondition)
-        {
-            InteractCondition -= interactCondition;
-        }
+        public void SetInteractCondition(Func<Transform, InteractType, bool> interactCondition) => InteractCondition = interactCondition;
+
+        public void ResetInteractCondition() => InteractCondition = default;
 
         protected bool CheckInteractCondition(Transform transform, InteractType interactType)
         {
@@ -28,43 +25,44 @@ namespace HitMaster3DTestProject
             else if (!InteractCondition.Invoke(transform, interactType))
                 return false;
 
+            _checkedTransform = transform;
             return true;
         }
 
         private void OnCollisionEnter(Collision collision)
         {
             if (CheckInteractCondition(collision.transform, InteractType.Collision))
-                OnObjectEnter?.Invoke();
+                OnObjectEnter?.Invoke(this);
         }
 
         private void OnTriggerEnter(Collider other)
         {
             if (CheckInteractCondition(other.transform, InteractType.Trigger))
-                OnObjectEnter?.Invoke();
+                OnObjectEnter?.Invoke(this);
         }
 
         private void OnCollisionStay(Collision collision)
         {
             if (CheckInteractCondition(collision.transform, InteractType.Collision))
-                OnObjectStay?.Invoke();
+                OnObjectStay?.Invoke(this);
         }
 
         private void OnTriggerStay(Collider other)
         {
             if (CheckInteractCondition(other.transform, InteractType.Trigger))
-                OnObjectStay?.Invoke();
+                OnObjectStay?.Invoke(this);
         }
 
         private void OnCollisionExit(Collision collision)
         {
             if (CheckInteractCondition(collision.transform, InteractType.Collision))
-                OnObjectExit?.Invoke();
+                OnObjectExit?.Invoke(this);
         }
 
         private void OnTriggerExit(Collider other)
         {
             if (CheckInteractCondition(other.transform, InteractType.Trigger))
-                OnObjectExit?.Invoke();
+                OnObjectExit?.Invoke(this);
         }
     }
 }

@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3435632146132311944}
   - component: {fileID: 8821369299404197067}
-  - component: {fileID: 2477891882282629906}
+  - component: {fileID: 4157365088795079697}
   m_Layer: 0
-  m_Name: Bullet
+  m_Name: Projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,7 +47,7 @@ CapsuleCollider:
   m_Height: 0.3
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2477891882282629906
+--- !u!114 &4157365088795079697
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -56,7 +56,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2874867229574060814}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40f09524845425e45afb40c2b7c48385, type: 3}
+  m_Script: {fileID: 11500000, guid: 69afcecc61ddb8c4a8549b48b3fdbb30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &6544240984360251727

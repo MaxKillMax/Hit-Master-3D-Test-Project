@@ -12,7 +12,7 @@ BlendTree:
     m_Motion: {fileID: -203655887218126122, guid: 3754f7d7603333c478f62e733c8187e4, type: 3}
     m_Threshold: 0
     m_Position: {x: 0, y: 0}
-    m_TimeScale: 1
+    m_TimeScale: 0.1
     m_CycleOffset: 0
     m_DirectBlendParameter: Blend
     m_Mirror: 0
@@ -20,15 +20,15 @@ BlendTree:
     m_Motion: {fileID: -203655887218126122, guid: eb7de77714c248945970892da1074542, type: 3}
     m_Threshold: 1
     m_Position: {x: 0, y: 0}
-    m_TimeScale: 1
+    m_TimeScale: 0.1
     m_CycleOffset: 0
     m_DirectBlendParameter: Movement Speed
     m_Mirror: 0
-  m_BlendParameter: Movement Speed
+  m_BlendParameter: Movement Value
   m_BlendParameterY: Blend
   m_MinThreshold: 0
   m_MaxThreshold: 1
-  m_UseAutomaticThresholds: 1
+  m_UseAutomaticThresholds: 0
   m_NormalizedBlendValues: 0
   m_BlendType: 0
 --- !u!1102 &-5055174163291505997
@@ -39,7 +39,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Movement
-  m_Speed: 1
+  m_Speed: 10
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours: []
@@ -88,7 +88,7 @@ AnimatorController:
   m_Name: PlayerAnimator
   serializedVersion: 5
   m_AnimatorParameters:
-  - m_Name: Movement Speed
+  - m_Name: Movement Value
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0

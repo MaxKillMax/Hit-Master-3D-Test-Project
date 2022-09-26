@@ -1,17 +1,10 @@
 using System;
-using UnityEngine;
 
 namespace HitMaster3DTestProject
 {
-    public class Player : MonoBehaviour
+    public class Player : LiveObject
     {
         public event Action<PlayerState> OnStateChanged;
-        public event Action<Player> OnPlayerDestroyed;
-
-        [SerializeField] private PlayerAnimator _playerAnimator;
-        [SerializeField] private PlayerCamera _playerCamera;
-        [SerializeField] private PlayerMovement _playerMovement;
-        [SerializeField] private PlayerAttack _playerAttack;
 
         private PlayerState _state = PlayerState.Idle;
         public PlayerState State => _state;
@@ -25,11 +18,11 @@ namespace HitMaster3DTestProject
             OnStateChanged?.Invoke(_state);
         }
 
-        public void Destroy()
+        public override void Destroy()
         {
             SetState(PlayerState.Dies);
+            base.Destroy();
             gameObject.SetActive(false);
-            OnPlayerDestroyed?.Invoke(this);
         }
     }
 }

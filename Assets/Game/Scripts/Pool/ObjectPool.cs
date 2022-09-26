@@ -1,42 +1,44 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace HitMaster3DTestProject
 {
-    public abstract class ObjectPool<T> : MonoBehaviour where T : MonoBehaviour
+    [Serializable]
+    public class ObjectPool<T> : UnityEngine.Object where T : MonoBehaviour
     {
-        [SerializeField] private T _prefab;
-        [SerializeField] private int _poolSize;
+        protected T Prefab;
+        protected int PoolSize;
 
         protected List<T> AvailableObjects;
         protected List<T> UsedObjects;
 
-        private void Awake()
+        public ObjectPool(T prefab, int poolSize)
         {
-            InitializePool();
-        }
-        
-        protected virtual void InitializePool()
-        {
-            AvailableObjects = new List<T>(_poolSize);
-            UsedObjects = new List<T>(_poolSize);
+            Prefab = prefab;
+            PoolSize = poolSize;
 
-            for (int i = 0; i < _poolSize; i++)
+            AvailableObjects = new List<T>(poolSize);
+            UsedObjects = new List<T>(poolSize);
+
+            InitializePoolObjects();
+        }
+
+        protected virtual void InitializePoolObjects()
+        {
+            for (int i = 0; i < PoolSize; i++)
                 InitializePoolObject();
         }
 
         protected virtual void InitializePoolObject()
         {
-            T t = Instantiate(_prefab);
-            t.gameObject.SetActive(false);
-
-            AvailableObjects.Add(t);
+            Release(Instantiate(Prefab));
         }
 
         public virtual T Get()
         {
             if (AvailableObjects.Count == 0)
-                return default;
+                InitializePoolObject();
 
             T t = AvailableObjects[0];
             t.gameObject.SetActive(true);
