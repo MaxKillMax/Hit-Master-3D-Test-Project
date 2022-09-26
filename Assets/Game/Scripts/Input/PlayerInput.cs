@@ -80,14 +80,12 @@ namespace HitMaster3DTestProject
 
             if (_wayPointEnemies.Count == 0)
             {
-                Debug.Log("Move To next waypoint");
                 _player.SetState(PlayerState.Moving);
 
                 _movement.MoveToNextPoint();
             }
             else
             {
-                Debug.Log("Start Attack");
                 _player.SetState(PlayerState.Attacks);
 
                 foreach (Enemy enemy in _wayPointEnemies)
