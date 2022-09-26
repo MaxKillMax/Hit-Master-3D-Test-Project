@@ -11,6 +11,7 @@ namespace HitMaster3DTestProject
         [SerializeField] private PlayerAnimator _playerAnimator;
         [SerializeField] private PlayerCamera _playerCamera;
         [SerializeField] private PlayerMovement _playerMovement;
+        [SerializeField] private PlayerAttack _playerAttack;
 
         private PlayerState _state = PlayerState.Idle;
         public PlayerState State => _state;
