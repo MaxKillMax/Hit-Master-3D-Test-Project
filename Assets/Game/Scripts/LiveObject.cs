@@ -9,7 +9,7 @@ namespace HitMaster3DTestProject
         public event Action<LiveObject> OnObjectDamaged;
 
         private float _health = 0;
-        public float Health { get; protected set; }
+        public float Health { get => _health; protected set => _health = value; }
 
         public void GetDamage(float value)
         {

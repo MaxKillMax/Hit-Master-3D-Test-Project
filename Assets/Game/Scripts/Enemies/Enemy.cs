@@ -9,6 +9,8 @@ namespace HitMaster3DTestProject
         [SerializeField] private float _startHealth;
         [SerializeField] private int _wayPoint;
 
+        public float MaxHealth => _startHealth;
+
         public int WayPoint => _wayPoint;
 
         private void Awake()

@@ -1,4 +1,6 @@
 using System;
+using UnityEngine;
+using NaughtyAttributes;
 
 namespace HitMaster3DTestProject
 {
@@ -6,6 +8,7 @@ namespace HitMaster3DTestProject
     {
         public event Action<PlayerState> OnStateChanged;
 
+        [SerializeField, ReadOnly] 
         private PlayerState _state = PlayerState.Idle;
         public PlayerState State => _state;
 

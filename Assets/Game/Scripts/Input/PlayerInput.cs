@@ -13,6 +13,8 @@ namespace HitMaster3DTestProject
         [SerializeField] private Enemies _enemies;
         [SerializeField] private Camera _camera;
 
+        private readonly float _speedMultiply = 2;
+        private readonly float _speedReduction = 0.1f;
         private float _lastSpeed;
 
         private List<Enemy> _wayPointEnemies = new List<Enemy>();
@@ -22,9 +24,15 @@ namespace HitMaster3DTestProject
             _movement.OnPlayerStopped += TryUpdateState;
         }
 
-        private void Start()
+        public void ActivateInput()
         {
+            enabled = true;
             TryUpdateState();
+        }
+
+        public void DeactivateInput()
+        {
+            enabled = false;
         }
 
         private void OnDestroy()
@@ -40,13 +48,22 @@ namespace HitMaster3DTestProject
 
         private void TryUpdateAnimation()
         {
-            float currentSpeed = _movement.CurrentSpeed;
-
-            if (_lastSpeed != currentSpeed)
+            if (_player.State == PlayerState.Moving)
             {
-                _lastSpeed = currentSpeed;
-                _animator.SetMovementValue(currentSpeed / _movement.MaximumSpeed);
+                _lastSpeed += Time.deltaTime * _movement.MaximumSpeed * _speedMultiply;
+                _animator.SetMovementValue(_lastSpeed / _movement.MaximumSpeed);
             }
+            else
+            {
+                _lastSpeed -= _speedReduction * Time.deltaTime;
+                _animator.SetMovementValue(_lastSpeed / _movement.MaximumSpeed);
+            }
+        }
+
+        private void SetMovementToNull()
+        {
+            _lastSpeed = 0;
+            _animator.SetMovementValue(0);
         }
 
         private void TryAttack()
@@ -54,11 +71,15 @@ namespace HitMaster3DTestProject
             if (_player.State != PlayerState.Attacks)
                 return;
 
+            Ray ray;
+
 #if UNITY_EDITOR
             if (Input.GetMouseButtonDown(0))
             {
-                Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-                _attack.LaunchProjectile(ray);
+                ray = _camera.ScreenPointToRay(Input.mousePosition);
+
+                if (Physics.Raycast(ray, out RaycastHit raycastHit))
+                    _attack.LaunchProjectile(raycastHit.point);
             }
 #else
             if (Input.touchCount > 0)
@@ -67,8 +88,10 @@ namespace HitMaster3DTestProject
 
                 if (touch.phase == TouchPhase.Began)
                 {
-                    Ray ray = Camera.main.ScreenPointToRay(touch.position);
-                    _attack.LaunchProjectile(ray);
+                    ray = Camera.main.ScreenPointToRay(touch.position);
+
+                    if (Physics.Raycast(ray, out RaycastHit raycastHit))
+                        _attack.LaunchProjectile(raycastHit.point);
                 }    
             }
 #endif
@@ -87,6 +110,8 @@ namespace HitMaster3DTestProject
             else
             {
                 _player.SetState(PlayerState.Attacks);
+
+                SetMovementToNull();
 
                 foreach (Enemy enemy in _wayPointEnemies)
                     enemy.OnObjectDestroyed += OnEnemyDestroyed;

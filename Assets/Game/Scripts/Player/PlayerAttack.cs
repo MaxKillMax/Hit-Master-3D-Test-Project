@@ -16,11 +16,15 @@ namespace HitMaster3DTestProject
             _projectilePool = new ProjectilePool(_projectileData, _poolSize, (transform, interactType) => transform.TryGetComponent(out EnemyPart enemyPart) && enemyPart.Enemy.Health > 0);
         }
 
-        public void LaunchProjectile(Ray ray)
+        public void LaunchProjectile(Vector3 point)
         {
             Projectile projectile =_projectilePool.Get();
 
-            projectile.LaunchProjectile(_bulletOrigin.position, ray.direction);
+            Vector3 heading = point - _bulletOrigin.position;
+            float distance = heading.magnitude;
+            Vector3 direction = heading / distance;
+
+            projectile.LaunchProjectile(_bulletOrigin.position, direction);
 
             projectile.OnObjectEnter += Attack;
             projectile.OnLifeTimeOut += ReleaseProjectile;

@@ -8,6 +8,7 @@ namespace HitMaster3DTestProject
 {
     public class PlayerMovement : MonoBehaviour
     {
+        public event Action OnWayPointsIsOut;
         public event Action OnPlayerStopped;
 
         [SerializeField] private NavMeshAgent _agent;
@@ -19,21 +20,30 @@ namespace HitMaster3DTestProject
         public int CurrentPoint => _currentPoint;
 
         public float MaximumSpeed => _agent.speed;
-        public float CurrentSpeed => _agent.velocity.x + _agent.velocity.y + _agent.velocity.z;
 
         public void MoveToNextPoint()
         {
             _currentPoint++;
-            _agent.SetDestination(_points[_currentPoint].transform.position);
-            StartCoroutine(WaitForStop());
+
+            if (_currentPoint < _points.Length)
+            {
+                _agent.SetDestination(_points[_currentPoint].transform.position);
+                StartCoroutine(WaitForStop());
+            }
+            else
+            {
+                OnWayPointsIsOut?.Invoke();
+            }
         }
 
         private IEnumerator WaitForStop()
         {
+            yield return new WaitForEndOfFrame();
+
             do
                 yield return new WaitForEndOfFrame();
             while (_agent.remainingDistance > _agent.stoppingDistance);
-
+            
             transform.DORotateQuaternion(_points[_currentPoint].rotation, _rotateTime);
             yield return new WaitForSeconds(_rotateTime);
 
