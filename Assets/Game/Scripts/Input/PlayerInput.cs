@@ -88,7 +88,7 @@ namespace HitMaster3DTestProject
 
                 if (touch.phase == TouchPhase.Began)
                 {
-                    ray = Camera.main.ScreenPointToRay(touch.position);
+                    ray = _camera.ScreenPointToRay(touch.position);
 
                     if (Physics.Raycast(ray, out RaycastHit raycastHit))
                         _attack.LaunchProjectile(raycastHit.point);
